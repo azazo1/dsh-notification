@@ -13,7 +13,11 @@ export const Config = Schema.object({
   minTurnDurationMs: Schema.number().default(5000)
     .description('Only notify for turns that ran at least this long, to skip quick replies.'),
   desktop: Schema.boolean().default(true)
-    .description('Show a native desktop notification (macOS/Linux/Windows).'),
+    .description('Show a native desktop notification on the machine running the dsh server (macOS/Linux/Windows).'),
+  browser: Schema.boolean().default(true)
+    .description('Show browser Notification popups in the Web UI — fires on the machine viewing the page, so it works with a remote server.'),
+  browserOnlyWhenHidden: Schema.boolean().default(true)
+    .description('Only show browser notifications while the tab is hidden; a visible tab already has your attention.'),
   webhookUrl: Schema.string().default('')
     .description('Optional URL to POST a JSON payload to (Slack-compatible "text" field included).'),
   title: Schema.string().default('DeepSeek Harness')
