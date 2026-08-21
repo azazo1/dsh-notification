@@ -33,6 +33,16 @@ dsh plugin --profile web add github:nishit130/dsh-notification
 The package ships plain ESM JavaScript — no build step, so a git install needs no
 `allowBuilds` entry.
 
+## Where notifications appear
+
+Desktop notifications fire on the machine **running the `dsh` server**, not in the browser
+viewing the Web UI:
+
+- `dsh web` on your own machine → notifications land exactly where you are. ✅
+- `dsh` on a remote box, Web UI opened from your laptop → desktop notifications fire on the
+  remote host, where nobody sees them. Use `webhookUrl` there — a push channel is the right
+  tool for a remote server anyway.
+
 ## Configuration
 
 Override the row in your profile's `cordis.patch.yml` (or via the Settings UI):
