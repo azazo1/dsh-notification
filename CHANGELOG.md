@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.1 — 2026-08-21
 
 ### Added
 - **Browser notification channel**: a web client half (`dsh.client`) that watches the
