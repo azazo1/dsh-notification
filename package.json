@@ -26,8 +26,11 @@
     "webhook"
   ],
   "license": "MIT",
-  "dependencies": {
-    "@deepseek-ai/schemastery": "*"
+  "peerDependencies": {
+    "@deepseek-ai/schemastery": "^3"
+  },
+  "devDependencies": {
+    "@deepseek-ai/schemastery": "^3.18.1"
   },
   "dsh": {
     "bundle": {
