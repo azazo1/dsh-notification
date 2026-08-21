@@ -1,0 +1,13 @@
+# Local-development overlay for dsh-notification.
+#
+# Copy to dev.patch.yml (gitignored), replace the path with your checkout's
+# absolute path, then from a harness source checkout run:
+#
+#   pnpm dsh web --patch /path/to/dsh-notification/dev.patch.yml
+#
+# Edits to index.js hot-reload; a low threshold makes turn-finish easy to see.
+- insert:
+    - id: notify
+      name: '/absolute/path/to/dsh-notification/index.js'
+      config:
+        minTurnDurationMs: 3000
