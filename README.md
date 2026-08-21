@@ -1,8 +1,8 @@
 # dsh-notification
 
-> Desktop + webhook notifications for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness):
-> know when your agent **finishes a turn**, **hits an error**, or is **waiting for your approval** —
-> without watching the tab.
+> Desktop, browser + webhook notifications for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
+> on **macOS · Linux · Windows**: know when your agent **finishes a turn**, **hits an error**,
+> or is **waiting for your approval** — without watching the tab.
 
 Long agent turns are the norm: you kick off a task, switch away, and come back to find the agent
 finished five minutes ago — or worse, stuck on an approval prompt the whole time. `dsh-notification`
@@ -102,18 +102,14 @@ Override the row in your profile's `cordis.patch.yml` (or via the Settings UI):
 
 ## Local development
 
+Copy `dev.patch.example.yml` to `dev.patch.yml` (gitignored), point it at your checkout's
+absolute path, then from a harness source checkout:
+
 ```sh
-# from a harness source checkout
 pnpm dsh web --patch ./path/to/dsh-notification/dev.patch.yml
 ```
 
-with a `dev.patch.yml` pointing at the absolute path of `index.js`:
-
-```yaml
-- insert:
-    - id: notify
-      name: '/absolute/path/to/dsh-notification/index.js'
-```
+Edits to `index.js` hot-reload without a restart. Run the tests with `npm test`.
 
 ## License
 
