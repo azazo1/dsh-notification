@@ -35,13 +35,21 @@ The package ships plain ESM JavaScript — no build step, so a git install needs
 
 ## Where notifications appear
 
-Desktop notifications fire on the machine **running the `dsh` server**, not in the browser
-viewing the Web UI:
+Three channels, three places:
 
-- `dsh web` on your own machine → notifications land exactly where you are. ✅
-- `dsh` on a remote box, Web UI opened from your laptop → desktop notifications fire on the
-  remote host, where nobody sees them. Use `webhookUrl` there — a push channel is the right
-  tool for a remote server anyway.
+| Channel | Fires on | Best for |
+|---|---|---|
+| Desktop (`desktop`) | the machine **running the `dsh` server** | `dsh web` on your own machine |
+| Browser (`browser`) | the machine **viewing the Web UI** | a remote server, or any Web UI use |
+| Webhook (`webhookUrl`) | wherever the URL points | phones, Slack, unattended runs |
+
+Browser notifications use the standard `Notification` API: the Web UI asks for permission on
+your first click or keypress, and by default popups appear **only while the tab is hidden** —
+a visible tab already has your attention (set `browserOnlyWhenHidden: false` to change that).
+
+Running everything on one machine with the tab hidden? You'd get both a desktop and a browser
+popup for the same event — turn one channel off (`desktop: false` or `browser: false`) if the
+pair bothers you.
 
 ## Configuration
 
@@ -65,7 +73,9 @@ Override the row in your profile's `cordis.patch.yml` (or via the Settings UI):
 | `notifyOnError` | boolean | `true` | Notify on `agent/error` |
 | `notifyOnApproval` | boolean | `true` | Notify when a tool call awaits approval |
 | `minTurnDurationMs` | number | `5000` | Skip notifications for quick turns |
-| `desktop` | boolean | `true` | Native desktop notification |
+| `desktop` | boolean | `true` | Native desktop notification on the server host |
+| `browser` | boolean | `true` | Browser `Notification` popups in the Web UI |
+| `browserOnlyWhenHidden` | boolean | `true` | Suppress browser popups while the tab is visible |
 | `webhookUrl` | string | `''` | Optional POST target (Slack-compatible payload) |
 | `title` | string | `'DeepSeek Harness'` | Desktop notification title |
 
