@@ -18,6 +18,10 @@
     "client.js",
     "cordis.patch.yml"
   ],
+  "scripts": {
+    "check": "node --check index.js && node --check client.js",
+    "test": "npm run check && node --test test/index.test.js"
+  },
   "keywords": [
     "dsh",
     "deepseek-harness",
