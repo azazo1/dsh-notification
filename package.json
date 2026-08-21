@@ -8,8 +8,14 @@
   "description": "Desktop + webhook notifications when your DeepSeek Harness agent finishes a turn, hits an error, or needs approval.",
   "type": "module",
   "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
   "files": [
     "index.js",
+    "client.js",
     "cordis.patch.yml"
   ],
   "keywords": [
@@ -26,6 +32,10 @@
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": ["@deepseek-ai/dsh-client-runtime"],
+      "platform": "web"
     }
   }
 }
