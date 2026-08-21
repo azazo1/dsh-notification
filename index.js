@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process'
 import Schema from '@deepseek-ai/schemastery'
 
-export const name = 'dsh-notify'
+export const name = 'dsh-notification'
 
 export const Config = Schema.object({
   notifyOnIdle: Schema.boolean().default(true)

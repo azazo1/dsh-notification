@@ -1,5 +1,9 @@
 {
-  "name": "dsh-notify",
+  "name": "dsh-notification",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nishit130/dsh-notify.git"
+  },
   "version": "0.1.0",
   "description": "Desktop + webhook notifications when your DeepSeek Harness agent finishes a turn, hits an error, or needs approval.",
   "type": "module",

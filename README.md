@@ -1,11 +1,11 @@
-# dsh-notify
+# dsh-notification
 
 > Desktop + webhook notifications for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness):
 > know when your agent **finishes a turn**, **hits an error**, or is **waiting for your approval** —
 > without watching the tab.
 
 Long agent turns are the norm: you kick off a task, switch away, and come back to find the agent
-finished five minutes ago — or worse, stuck on an approval prompt the whole time. `dsh-notify`
+finished five minutes ago — or worse, stuck on an approval prompt the whole time. `dsh-notification`
 listens to the harness's own lifecycle events and pings you the moment your attention is needed.
 
 ## What it does
@@ -25,9 +25,9 @@ Each event can go to:
 ## Install
 
 ```sh
-dsh plugin --profile web add dsh-notify
+dsh plugin --profile web add dsh-notification
 # or straight from git:
-dsh plugin --profile web add github:<you>/dsh-notify
+dsh plugin --profile web add github:nishit130/dsh-notification
 ```
 
 The package ships plain ESM JavaScript — no build step, so a git install needs no
@@ -40,7 +40,7 @@ Override the row in your profile's `cordis.patch.yml` (or via the Settings UI):
 ```yaml
 - insert:
     - id: notify
-      name: dsh-notify
+      name: dsh-notification
       config:
         minTurnDurationMs: 10000        # only notify for turns ≥ 10s
         webhookUrl: 'https://hooks.slack.com/services/XXX/YYY/ZZZ'
@@ -84,7 +84,7 @@ Override the row in your profile's `cordis.patch.yml` (or via the Settings UI):
 
 ```sh
 # from a harness source checkout
-pnpm dsh web --patch ./path/to/dsh-notify/dev.patch.yml
+pnpm dsh web --patch ./path/to/dsh-notification/dev.patch.yml
 ```
 
 with a `dev.patch.yml` pointing at the absolute path of `index.js`:
@@ -92,7 +92,7 @@ with a `dev.patch.yml` pointing at the absolute path of `index.js`:
 ```yaml
 - insert:
     - id: notify
-      name: '/absolute/path/to/dsh-notify/index.js'
+      name: '/absolute/path/to/dsh-notification/index.js'
 ```
 
 ## License
