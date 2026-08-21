@@ -1,0 +1,5 @@
+# Layer contributed when a profile lists this bundle (dsh plugin add dsh-notify).
+# Users can override any of these config values in their profile's cordis.patch.yml.
+- insert:
+    - id: notify
+      name: dsh-notify
