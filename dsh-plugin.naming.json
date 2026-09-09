@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "policy": "dsh-plugin-naming/v1",
+  "plugin": {
+    "namespace": "azazo1",
+    "name": "notification",
+    "coordinate": "azazo1/notification",
+    "packageName": "dsh-notification"
+  },
+  "names": {
+    "pluginNames": ["dsh-notification"],
+    "loaderIds": ["notify"],
+    "services": [],
+    "tools": [],
+    "commands": [],
+    "skills": [],
+    "skillProviders": [],
+    "events": [],
+    "settingsNamespaces": ["dsh-notification"],
+    "routes": []
+  }
+}

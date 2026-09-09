@@ -5,22 +5,83 @@
     "url": "git+https://github.com/nishit130/dsh-notification.git"
   },
   "version": "0.1.1",
-  "description": "Desktop + webhook notifications when your DeepSeek Harness agent finishes a turn, hits an error, or needs approval.",
+  "description": "Desktop, browser and webhook notifications when a DeepSeek Harness agent finishes a turn, hits an error, or needs approval.",
+  "license": "MIT",
   "type": "module",
-  "main": "index.js",
+  "main": "lib/index.js",
   "exports": {
-    ".": "./index.js",
-    "./client": "./client.js",
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
-    "index.js",
-    "client.js",
-    "cordis.patch.yml"
+    "lib",
+    "cordis.patch.yml",
+    "dsh-plugin.naming.json",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
-    "check": "node --check index.js && node --check client.js",
-    "test": "npm run check && node --test test/index.test.js"
+    "typecheck": "tsc --noEmit",
+    "build:host": "tsdown --config tsdown.host.config.ts",
+    "build:client": "tsdown --config tsdown.client.config.ts",
+    "build": "pnpm run build:host && pnpm run build:client",
+    "test": "node --test tests/shared.test.ts tests/host.test.ts",
+    "check:client": "node scripts/check-client.mjs",
+    "check": "pnpm run typecheck && pnpm run test && pnpm run build && pnpm run check:client"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-api-session-controller",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-client-ui-slots"
+      ]
+    }
+  },
+  "engines": {
+    "node": "^22.19 || >=24"
+  },
+  "packageManager": "pnpm@11.24.0",
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-settings": "^0.1.2-rc.1",
+    "@deepseek-ai/schemastery": "^3.18.1",
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-settings": {
+      "optional": true
+    },
+    "@deepseek-ai/schemastery": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-settings": "^0.1.2-rc.1",
+    "@deepseek-ai/schemastery": "^3.18.1",
+    "@types/node": "^22.19.0",
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0",
+    "tsdown": "^0.22.2",
+    "typescript": "^5.9.0"
   },
   "keywords": [
     "dsh",
@@ -28,21 +89,5 @@
     "dsh-plugin",
     "notifications",
     "webhook"
-  ],
-  "license": "MIT",
-  "peerDependencies": {
-    "@deepseek-ai/schemastery": "^3"
-  },
-  "devDependencies": {
-    "@deepseek-ai/schemastery": "^3.18.1"
-  },
-  "dsh": {
-    "bundle": {
-      "patch": "./cordis.patch.yml"
-    },
-    "client": {
-      "inject": ["@deepseek-ai/dsh-client-runtime"],
-      "platform": "web"
-    }
-  }
+  ]
 }

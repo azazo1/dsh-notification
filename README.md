@@ -1,85 +1,80 @@
 # dsh-notification
 
-> Desktop, browser + webhook notifications for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
-> on **macOS · Linux · Windows**: know when your agent **finishes a turn**, **hits an error**,
-> or is **waiting for your approval** — without watching the tab.
+> 给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的桌面, 浏览器和 webhook 通知:
+> 知道 agent **跑完一轮**, **出错**, 或 **在等你审批**, 不用一直盯着标签页.
 
-Long agent turns are the norm: you kick off a task, switch away, and come back to find the agent
-finished five minutes ago — or worse, stuck on an approval prompt the whole time. `dsh-notification`
-listens to the harness's own lifecycle events and pings you the moment your attention is needed.
+长回合是常态: 丢出去一个任务, 切走, 回来发现五分钟前就结束了, 或者卡在审批上. `dsh-notification` 听 harness 自己的生命周期事件, 需要你看的时候再叫你.
 
-## What it does
+## 它做什么
 
-| Event | Trigger | Default |
+| 事件 | 触发 | 默认 |
 |---|---|---|
-| **Agent finished** | `agent/status` flips `running → idle`, and the turn ran ≥ `minTurnDurationMs` | on |
-| **Agent error** | `agent/error` (a step or turn errored) | on |
-| **Approval needed** | `approval/request` waterfall (observe-only; always delegates with `next()`) | on |
+| **Agent finished** | `agent/status` 从 `running` 变成 `idle`, 且回合时长 >= `minTurnDurationMs` | 开 |
+| **Agent error** | `agent/error` | 开 |
+| **Approval needed** | `approval/request` 瀑布流 (只观察, 一定 `next()`) | 开 |
 
-Each event can go to:
-- **Desktop notification** — zero dependencies: `osascript` (macOS), `notify-send` (Linux),
-  PowerShell toast (Windows).
-- **Webhook** — a JSON `POST` with a Slack-compatible `text` field, so a Slack/Discord/generic
-  incoming-webhook URL works out of the box.
+每个事件可以发到:
 
-## Install
+- **系统通知** — 零依赖: `osascript` (macOS), `notify-send` (Linux), PowerShell toast (Windows).
+- **浏览器通知** — 在打开 Web UI 的那台机器上弹 `Notification`.
+- **Webhook** — JSON `POST`, 带 Slack 兼容的 `text` 字段.
+
+## 安装
 
 ```sh
 dsh plugin --profile web add dsh-notification
-# or straight from git:
-dsh plugin --profile web add github:nishit130/dsh-notification
+# 或直接从 git:
+dsh plugin --profile web add github:azazo1/dsh-notification
 ```
 
-The package ships plain ESM JavaScript — no build step, so a git install needs no
-`allowBuilds` entry.
+## 通知出现在哪
 
-## Where notifications appear
-
-Three channels, three places:
-
-| Channel | Fires on | Best for |
+| 渠道 | 打在哪 | 适合 |
 |---|---|---|
-| Desktop (`desktop`) | the machine **running the `dsh` server** | `dsh web` on your own machine |
-| Browser (`browser`) | the machine **viewing the Web UI** | a remote server, or any Web UI use |
-| Webhook (`webhookUrl`) | wherever the URL points | phones, Slack, unattended runs |
+| Desktop (`desktop`) | 跑 `dsh` 的那台机器 | 本机 `dsh web` |
+| Browser (`browser`) | 打开 Web UI 的那台机器 | 远端 server, 或任何 Web UI |
+| Webhook (`webhookUrl`) | URL 指向的地方 | 手机, Slack, 无人值守 |
 
-Browser notifications use the standard `Notification` API: the Web UI asks for permission on
-your first click or keypress, and by default popups appear **only while the tab is hidden** —
-a visible tab already has your attention (set `browserOnlyWhenHidden: false` to change that).
+浏览器通知默认只在标签页隐藏时弹出. 本机同时开着系统通知和浏览器通知时, 同一事件会弹两次, 关掉其中一条即可.
 
-Running everything on one machine with the tab hidden? You'd get both a desktop and a browser
-popup for the same event — turn one channel off (`desktop: false` or `browser: false`) if the
-pair bothers you.
+## 配置
 
-## Configuration
-
-Override the row in your profile's `cordis.patch.yml` (or via the Settings UI):
+完整选项写在 `$DSH_HOME/settings.yaml`, 改完即时生效, 不用重启:
 
 ```yaml
-- insert:
-    - id: notify
-      name: dsh-notification
-      config:
-        minTurnDurationMs: 10000        # only notify for turns ≥ 10s
-        webhookUrl: 'https://hooks.slack.com/services/XXX/YYY/ZZZ'
-        notifyOnApproval: true
-        desktop: true
-        title: 'DSH'
+dsh-notification:
+  desktop: false
+  browser: true
+  minTurnDurationMs: 10000
+  webhookUrl: 'https://hooks.slack.com/services/XXX/YYY/ZZZ'
+  title: DSH
 ```
 
-| Field | Type | Default | Meaning |
-|---|---|---|---|
-| `notifyOnIdle` | boolean | `true` | Notify when a turn finishes |
-| `notifyOnError` | boolean | `true` | Notify on `agent/error` |
-| `notifyOnApproval` | boolean | `true` | Notify when a tool call awaits approval |
-| `minTurnDurationMs` | number | `5000` | Skip notifications for quick turns |
-| `desktop` | boolean | `true` | Native desktop notification on the server host |
-| `browser` | boolean | `true` | Browser `Notification` popups in the Web UI |
-| `browserOnlyWhenHidden` | boolean | `true` | Suppress browser popups while the tab is visible |
-| `webhookUrl` | string | `''` | Optional POST target (Slack-compatible payload) |
-| `title` | string | `'DeepSeek Harness'` | Desktop notification title |
+Web UI 的 **设置 > 常规** 里有一行 **系统通知** 开关, 对应 `desktop`. 其余字段继续用 `settings.yaml` 或 Loader 行 config.
 
-### Webhook payload
+| 字段 | 类型 | 默认 | 含义 |
+|---|---|---|---|
+| `notifyOnIdle` | boolean | `true` | 回合结束时通知 |
+| `notifyOnError` | boolean | `true` | `agent/error` 时通知 |
+| `notifyOnApproval` | boolean | `true` | 等待审批时通知 |
+| `minTurnDurationMs` | number | `5000` | 短回合不发 "跑完了" |
+| `desktop` | boolean | `true` | 系统原生通知 |
+| `browser` | boolean | `true` | 浏览器 Notification |
+| `browserOnlyWhenHidden` | boolean | `true` | 标签页可见时不弹浏览器通知 |
+| `webhookUrl` | string | `''` | 可选 POST 目标 |
+| `title` | string | `'DeepSeek Harness'` | 桌面 / 浏览器标题 |
+
+Loader 行 config (profile `cordis.patch.yml`) 是 composition 底, `settings.yaml` 叠在上面.
+
+```yaml
+- id: notify
+  config:
+    minTurnDurationMs: 10000
+```
+
+id 针对性 patch 不会深合并, 会整份替换该插件 config.
+
+### Webhook 载荷
 
 ```json
 {
@@ -91,25 +86,23 @@ Override the row in your profile's `cordis.patch.yml` (or via the Settings UI):
 }
 ```
 
-## Design notes
+## 设计要点
 
-- **Everything registered through `ctx` is an effect** — the listeners are removed automatically
-  on unload/hot-reload; there is no manual cleanup path (Cordis revertible effects).
-- **`approval/request` is a waterfall.** This plugin only observes it, so its listener always
-  calls `next()` — returning without it would claim the decision and swallow the real answerers.
-- **Never break the loop.** Desktop spawns are detached and fire-and-forget; webhook failures are
-  swallowed. A notifier must never surface an error into the agent's turn.
+- 经 `ctx` 注册的都是 effect, 卸载 / 热重载会自动摘掉监听.
+- `approval/request` 是瀑布流. 本插件只观察, 监听器一定调用 `next()`.
+- 桌面 spawn 分离且 fire-and-forget, webhook 失败吞掉, 通知器不能冒泡进 agent 回合.
 
-## Local development
+## 本地开发
 
-Copy `dev.patch.example.yml` to `dev.patch.yml` (gitignored), point it at your checkout's
-absolute path, then from a harness source checkout:
+复制 `dev.patch.example.yml` 为 `dev.patch.yml` (已被 gitignore), 填 checkout 绝对路径, 然后在 harness 源码目录:
 
 ```sh
 pnpm dsh web --patch ./path/to/dsh-notification/dev.patch.yml
 ```
 
-Edits to `index.js` hot-reload without a restart. Run the tests with `npm test`.
+```sh
+just verify
+```
 
 ## License
 

@@ -5,9 +5,9 @@
 #
 #   pnpm dsh web --patch /path/to/dsh-notification/dev.patch.yml
 #
-# Edits to index.js hot-reload; a low threshold makes turn-finish easy to see.
+# Edits to the Host entry hot-reload; a low threshold makes turn-finish easy to see.
 - insert:
     - id: notify
-      name: '/absolute/path/to/dsh-notification/index.js'
+      name: '/absolute/path/to/dsh-notification'
       config:
         minTurnDurationMs: 3000

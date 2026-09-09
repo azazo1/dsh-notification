@@ -1,4 +1,8 @@
 node_modules/
-*.tgz
+.pnpm-store/
+*.log
+.tmp/
 .DS_Store
+coverage/
+*.tgz
 dev.patch.yml
