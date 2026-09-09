@@ -1,7 +1,7 @@
 /**
  * dsh-notification 浏览器半区.
  *
- * 盯着 session list 弹浏览器通知, 并在 Settings > General 挂一行系统通知开关.
+ * 盯着 session list 弹浏览器通知, 并在 Settings 侧栏挂独立通知页.
  */
 import { createElement } from 'react'
 import {
@@ -12,7 +12,7 @@ import {
 } from '../shared.ts'
 import { NS, en, zh, type NotificationLocaleKey } from './locales.ts'
 import type { SettingsScope } from './scope.ts'
-import { DesktopSettingsRow } from './settings-row.tsx'
+import { NotificationSettingsSection } from './settings-section.tsx'
 import { ensurePermission, watchSessions, type SessionList } from './session-watch.ts'
 import { injectStyles } from './styles.ts'
 
@@ -47,7 +47,7 @@ interface ClientContext {
 export const inject = ['slots', 'locale', 'settingsScope', 'sessions']
 
 /**
- * 注入样式, 订阅浏览器通知, 并挂上 General 设置行.
+ * 注入样式, 订阅浏览器通知, 并挂上独立设置页.
  * @param ctx - Web Client 插件上下文.
  */
 export function apply(ctx: ClientContext): void {
@@ -69,13 +69,14 @@ export function apply(ctx: ClientContext): void {
   }
 
   const t = ctx.locale.bind(NS) as (key: NotificationLocaleKey) => string
-  ctx.slots.inject('settings.general.item', () => ctx.slots.register(
+  ctx.slots.inject('settings.section', () => ctx.slots.register(
     {
-      name: 'settings.general.item',
+      name: 'settings.section',
       id: PLUGIN_ID,
-      order: 90,
+      order: 40,
+      label: () => t('page.title'),
       locale: NS,
     },
-    () => createElement(DesktopSettingsRow, { scope, t }),
+    () => createElement(NotificationSettingsSection, { scope, t }),
   ))
 }

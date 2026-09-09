@@ -2,7 +2,7 @@
  * dsh-notification Host 半区.
  *
  * 监听 agent 生命周期, 按设置发系统原生通知和 webhook.
- * settings 命名空间让 Web General 和 settings.yaml 能热更新同一份配置.
+ * settings 命名空间让 Web 设置页和 settings.yaml 能热更新同一份配置.
  */
 import type { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'

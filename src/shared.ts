@@ -10,9 +10,6 @@ export const SETTINGS_NAMESPACE = PLUGIN_ID
 /** Loader 行 id, 已发布, 不要改. */
 export const LOADER_ID = 'notify'
 
-/** 系统原生通知字段. */
-export const DESKTOP_FIELD = 'desktop'
-
 /** 默认通知标题. */
 export const DEFAULT_TITLE = 'DeepSeek Harness'
 
@@ -40,6 +37,19 @@ export interface NotificationSettings {
   /** 桌面和浏览器通知标题. */
   title: string
 }
+
+/** settings 字段名, 给 Client `scope.set` 用. */
+export const SETTINGS_FIELDS = {
+  notifyOnIdle: 'notifyOnIdle',
+  notifyOnError: 'notifyOnError',
+  notifyOnApproval: 'notifyOnApproval',
+  minTurnDurationMs: 'minTurnDurationMs',
+  desktop: 'desktop',
+  browser: 'browser',
+  browserOnlyWhenHidden: 'browserOnlyWhenHidden',
+  webhookUrl: 'webhookUrl',
+  title: 'title',
+} as const satisfies { [K in keyof NotificationSettings]: K }
 
 /** schema / 解码共用的默认值. */
 export const DEFAULT_SETTINGS: NotificationSettings = {

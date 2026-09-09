@@ -1,14 +1,55 @@
 import { PLUGIN_ID } from '../shared.ts'
 
 const CSS_TEXT = `
-.dsh-notification-row {
+.dsh-notification-section {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dsh-notification-heading {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--dsw-alias-label-primary);
+}
+
+.dsh-notification-intro {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.dsh-notification-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--dsw-alias-bg-layer-3);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 12px;
+  padding: 4px 12px 8px;
+}
+
+.dsh-notification-panel-title {
+  padding: 12px 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-primary);
+}
+
+.dsh-notification-panel > * + * {
+  border-top: 1px solid var(--dsw-alias-border-l2);
+}
+
+.dsh-notification-switch-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   width: 100%;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--dsw-alias-border-l2);
+  padding: 12px 0;
 }
 
 .dsh-notification-text {
@@ -27,6 +68,7 @@ const CSS_TEXT = `
 }
 
 .dsh-notification-desc {
+  margin: 0;
   color: var(--dsw-alias-label-tertiary);
   font-size: 12px;
   font-weight: 400;
@@ -77,8 +119,43 @@ const CSS_TEXT = `
   transform: translateX(16px);
 }
 
+.dsh-notification-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 0;
+}
+
+.dsh-notification-field .dsh-notification-title {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.dsh-notification-input {
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 8px;
+  background: var(--dsw-alias-bg-layer-3);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-primary);
+}
+
+.dsh-notification-input:focus-visible {
+  outline: none;
+  border-color: var(--dsw-alias-brand-primary);
+}
+
+.dsh-notification-input:disabled {
+  color: var(--dsw-alias-label-tertiary);
+  cursor: default;
+}
+
 @media (max-width: 640px) {
-  .dsh-notification-row {
+  .dsh-notification-switch-row {
     flex-direction: column;
     align-items: stretch;
   }
@@ -89,6 +166,10 @@ const CSS_TEXT = `
 
   .dsh-notification-switch {
     align-self: flex-end;
+  }
+
+  .dsh-notification-input {
+    width: 100%;
   }
 }
 `.trim()

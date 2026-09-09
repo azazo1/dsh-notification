@@ -50,7 +50,7 @@ dsh-notification:
   title: DSH
 ```
 
-Web UI 的 **设置 > 常规** 里有一行 **系统通知** 开关, 对应 `desktop`. 其余字段继续用 `settings.yaml` 或 Loader 行 config.
+Web UI 的 **设置 > 通知** 覆盖全部字段, 改完即时生效.
 
 | 字段 | 类型 | 默认 | 含义 |
 |---|---|---|---|
