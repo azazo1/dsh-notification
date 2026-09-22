@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Desktop notifications no longer crash the dsh host process when the
+  notifier binary is missing (e.g. headless Linux without `notify-send`).
+  `spawn()` failures are delivered asynchronously as an `'error'` event on
+  the returned ChildProcess, so the existing try/catch could not catch them
+  and Node rethrew the event as `uncaughtException` on every turn end.
+  Every platform branch now attaches a no-op `'error'` listener synchronously,
+  keeping the notifier strictly best-effort. (closes #1)
+
 ## 0.1.1 — 2026-08-21
 
 ### Added

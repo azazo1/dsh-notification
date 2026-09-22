@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process'
+import { spawn as nodeSpawn } from 'node:child_process'
 import Schema from '@deepseek-ai/schemastery'
 
 export const name = 'dsh-notification'
@@ -27,16 +27,27 @@ export const Config = Schema.object({
 /**
  * Fire a native desktop notification without any dependency:
  * osascript on macOS, notify-send on Linux, a PowerShell toast on Windows.
+ *
  * Failures are swallowed — a notifier must never break the agent loop.
+ * spawn() failures (missing binary, EACCES, …) are delivered ASYNCHRONOUSLY
+ * as an `'error'` event on the returned ChildProcess, so a try/catch around
+ * the synchronous spawn() call cannot catch them. Without an `'error'`
+ * listener, Node rethrows the event and kills the whole dsh process — which
+ * is exactly what happens on headless Linux with no `notify-send` installed.
+ * We attach a no-op `'error'` listener on every platform branch to make sure
+ * a missing or failing notifier binary can never take the host down.
+ *
+ * `deps.spawn` is injectable so the regression test can simulate an async
+ * ENOENT without mutating `node:child_process` (a frozen built-in namespace).
  */
-function desktopNotify(title, body) {
+export function desktopNotify(title, body, { spawn = nodeSpawn } = {}) {
   try {
     if (process.platform === 'darwin') {
       const esc = (s) => String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"')
       spawn('osascript', ['-e', `display notification "${esc(body)}" with title "${esc(title)}"`],
-        { stdio: 'ignore', detached: true }).unref()
+        { stdio: 'ignore', detached: true }).on('error', () => {}).unref()
     } else if (process.platform === 'linux') {
-      spawn('notify-send', [title, body], { stdio: 'ignore', detached: true }).unref()
+      spawn('notify-send', [title, body], { stdio: 'ignore', detached: true }).on('error', () => {}).unref()
     } else if (process.platform === 'win32') {
       const esc = (s) => String(s).replace(/'/g, "''")
       const ps = [
@@ -47,7 +58,7 @@ function desktopNotify(title, body) {
         `[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('${esc(title)}').Show([Windows.UI.Notifications.ToastNotification]::new($t));`,
       ].join(' ')
       spawn('powershell', ['-NoProfile', '-NonInteractive', '-Command', ps],
-        { stdio: 'ignore', detached: true }).unref()
+        { stdio: 'ignore', detached: true }).on('error', () => {}).unref()
     }
   } catch {}
 }

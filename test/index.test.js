@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { apply, Config, name } from '../index.js'
+import { EventEmitter } from 'node:events'
+import { apply, Config, desktopNotify, name } from '../index.js'
 
 /** Minimal Cordis-shaped context: records listeners, exposes emit helpers. */
 function mockCtx() {
@@ -141,4 +142,45 @@ test('agent/disposed drops turn-timing state', (t) => {
   ctx.emit('agent/disposed', { agent })
   ctx.emit('agent/status', { agent, status: 'idle' })
   assert.equal(calls.length, 0, 'no notification for an agent disposed mid-turn')
+})
+
+/**
+ * Regression test for issue #1: on headless Linux without `notify-send`,
+ * `spawn()` returns synchronously and the OS failure (ENOENT) arrives later
+ * as an `'error'` event on the ChildProcess. A missing `'error'` listener
+ * makes Node rethrow it as uncaughtException and kill the whole dsh process.
+ * The fix attaches a no-op `'error'` listener synchronously on every branch
+ * so the async error is swallowed and the notifier stays best-effort.
+ *
+ * `node:child_process` is a frozen built-in module namespace in ESM, so we
+ * inject the spawn function through `desktopNotify`'s `deps` parameter
+ * instead of mutating the global — removing that parameter would silently
+ * un-guard the headless-Linux crash path this test exists to cover.
+ */
+test('desktop notification swallows an async spawn ENOENT (regression for issue #1)', async (t) => {
+  const fakeChild = new EventEmitter()
+  fakeChild.unref = () => {}
+  const enoent = Object.assign(new Error('spawn notify-send ENOENT'), { code: 'ENOENT' })
+  setImmediate(() => fakeChild.emit('error', enoent))
+
+  const spawnCalls = []
+  const mockSpawn = (cmd, args, opts) => {
+    spawnCalls.push({ cmd, args, opts })
+    return fakeChild
+  }
+
+  const unhandled = []
+  const onUncaught = (err) => { unhandled.push(err) }
+  process.on('uncaughtException', onUncaught)
+  t.after(() => { process.off('uncaughtException', onUncaught) })
+
+  desktopNotify('DeepSeek Harness', 'Agent finished — done in 1m 31s', { spawn: mockSpawn })
+
+  await new Promise((r) => setImmediate(r))
+  await new Promise((r) => setImmediate(r))
+
+  assert.equal(spawnCalls.length, 1, 'exactly one spawn per desktop notification')
+  assert.deepEqual(spawnCalls[0].opts, { stdio: 'ignore', detached: true })
+  assert.equal(unhandled.length, 0,
+    `spawn 'error' must NOT bubble to uncaughtException (got: ${unhandled.map((e) => e.message).join(', ')})`)
 })
