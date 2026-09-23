@@ -1,5 +1,5 @@
 import z from "@deepseek-ai/schemastery";
-import { Context } from "@deepseek-ai/cordis";
+import { Context, Volatile } from "@deepseek-ai/cordis";
 //#region src/shared.d.ts
 /** 用户可调的通知设置. */
 interface NotificationSettings {
@@ -25,35 +25,45 @@ interface NotificationSettings {
 //#endregion
 //#region src/index.d.ts
 declare const name = "dsh-notification";
-type Config = NotificationSettings;
+interface Config {
+  notifyOnIdle: Volatile<boolean>;
+  notifyOnError: Volatile<boolean>;
+  notifyOnApproval: Volatile<boolean>;
+  minTurnDurationMs: Volatile<number>;
+  desktop: Volatile<boolean>;
+  browser: Volatile<boolean>;
+  browserOnlyWhenHidden: Volatile<boolean>;
+  webhookUrl: Volatile<string>;
+  title: Volatile<string>;
+}
 /** Loader / settings 共用的通知 schema. */
-declare const Config: z<Schemastery.ObjectS<{
-  notifyOnIdle: z<boolean, boolean>;
-  notifyOnError: z<boolean, boolean>;
-  notifyOnApproval: z<boolean, boolean>;
-  minTurnDurationMs: z<number, number>;
-  desktop: z<boolean, boolean>;
-  browser: z<boolean, boolean>;
-  browserOnlyWhenHidden: z<boolean, boolean>;
-  webhookUrl: z<string, string>;
-  title: z<string, string>;
-}>, Schemastery.ObjectT<{
-  notifyOnIdle: z<boolean, boolean>;
-  notifyOnError: z<boolean, boolean>;
-  notifyOnApproval: z<boolean, boolean>;
-  minTurnDurationMs: z<number, number>;
-  desktop: z<boolean, boolean>;
-  browser: z<boolean, boolean>;
-  browserOnlyWhenHidden: z<boolean, boolean>;
-  webhookUrl: z<string, string>;
-  title: z<string, string>;
-}>>;
+declare const Config: z<Schemastery.ObjectS<NoInfer<{
+  notifyOnIdle: z<boolean, boolean, "volatile-defined">;
+  notifyOnError: z<boolean, boolean, "volatile-defined">;
+  notifyOnApproval: z<boolean, boolean, "volatile-defined">;
+  minTurnDurationMs: z<number, number, "volatile-defined">;
+  desktop: z<boolean, boolean, "volatile-defined">;
+  browser: z<boolean, boolean, "volatile-defined">;
+  browserOnlyWhenHidden: z<boolean, boolean, "volatile-defined">;
+  webhookUrl: z<string, string, "volatile-defined">;
+  title: z<string, string, "volatile-defined">;
+}>>, Schemastery.ObjectT<NoInfer<{
+  notifyOnIdle: z<boolean, boolean, "volatile-defined">;
+  notifyOnError: z<boolean, boolean, "volatile-defined">;
+  notifyOnApproval: z<boolean, boolean, "volatile-defined">;
+  minTurnDurationMs: z<number, number, "volatile-defined">;
+  desktop: z<boolean, boolean, "volatile-defined">;
+  browser: z<boolean, boolean, "volatile-defined">;
+  browserOnlyWhenHidden: z<boolean, boolean, "volatile-defined">;
+  webhookUrl: z<string, string, "volatile-defined">;
+  title: z<string, string, "volatile-defined">;
+}>>, "plain">;
 /**
  * 注册 settings 命名空间, 并把 Loader 行配置作为 composition 底.
  * @param ctx - Host 插件上下文.
  * @param config - Loader 校验后的行配置, 缺省时使用 schema 默认值.
  */
-declare function apply(ctx: Context, config?: NotificationSettings): void;
+declare function apply(ctx: Context, config: Config): void;
 //#endregion
 export { Config, type NotificationSettings, apply, name };
 //# sourceMappingURL=index.d.ts.map

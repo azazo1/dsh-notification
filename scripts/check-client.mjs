@@ -51,7 +51,7 @@ if (typeof exports.apply !== 'function') {
 if (
   !Array.isArray(exports.inject)
   || !exports.inject.includes('slots')
-  || !exports.inject.includes('settingsScope')
+  || !exports.inject.includes('configForms')
   || !exports.inject.includes('sessions')
 ) {
   throw new Error(`unexpected inject: ${JSON.stringify(exports.inject)}`)

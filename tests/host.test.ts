@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { after, describe, it } from 'node:test'
 import { apply, Config, name } from '../src/index.ts'
-import type { NotificationSettings } from '../src/shared.ts'
+import { DEFAULT_SETTINGS, type NotificationSettings } from '../src/shared.ts'
 
 interface MockCtx {
   logger: { info: (...args: unknown[]) => void }
@@ -40,53 +40,45 @@ function captureWebhook() {
   return calls
 }
 
-function webhookConfig(overrides: Partial<NotificationSettings> = {}): NotificationSettings {
-  return Config({
+type Ref<T> = { get(): T }
+
+function ref<T>(value: T): Ref<T> {
+  return { get: () => value }
+}
+
+function webhookConfig(overrides: Partial<NotificationSettings> = {}): Config {
+  const value: NotificationSettings = {
+    ...DEFAULT_SETTINGS,
     desktop: false,
     webhookUrl: 'https://example.invalid/hook',
     minTurnDurationMs: 0,
     ...overrides,
-  })
+  }
+  return {
+    notifyOnIdle: ref(value.notifyOnIdle),
+    notifyOnError: ref(value.notifyOnError),
+    notifyOnApproval: ref(value.notifyOnApproval),
+    minTurnDurationMs: ref(value.minTurnDurationMs),
+    desktop: ref(value.desktop),
+    browser: ref(value.browser),
+    browserOnlyWhenHidden: ref(value.browserOnlyWhenHidden),
+    webhookUrl: ref(value.webhookUrl),
+    title: ref(value.title),
+  }
 }
 
 function mockCtxWithSettings(): MockCtx {
-  const ctx = mockCtx()
-  ctx.inject = (_deps, fn) => {
-    fn({
-      logger: ctx.logger,
-      settings: {
-        installSection(
-          _owner: unknown,
-          _ns: unknown,
-          _schema: unknown,
-          entry: NotificationSettings,
-          hooks: {
-            setSource: (current: () => NotificationSettings) => void
-            onChange: () => void
-          },
-        ) {
-          let current = entry
-          hooks.setSource(() => current)
-          ctx.updateSettings = (next) => {
-            current = next
-            hooks.onChange()
-          }
-          hooks.onChange()
-        },
-      },
-    })
-  }
-  return ctx
+  return mockCtx()
 }
 
 describe('plugin contract', () => {
   it('exports a named plugin with a validating schema', () => {
     assert.equal(name, 'dsh-notification')
     const config = Config({})
-    assert.equal(config.notifyOnIdle, true)
-    assert.equal(config.minTurnDurationMs, 5000)
-    assert.equal(config.browser, true)
-    assert.equal(config.desktop, true)
+    assert.equal(config.notifyOnIdle.get(), true)
+    assert.equal(config.minTurnDurationMs.get(), 5000)
+    assert.equal(config.browser.get(), true)
+    assert.equal(config.desktop.get(), true)
   })
 
   it('apply registers the four listeners', () => {
@@ -206,7 +198,7 @@ describe('live settings', () => {
     const ctx = mockCtxWithSettings()
     const entry = webhookConfig()
     apply(ctx as never, entry)
-    ctx.updateSettings?.({ ...entry, notifyOnIdle: false })
+    entry.notifyOnIdle = ref(false)
     const agent = {}
     ctx.emit('agent/status', { agent, status: 'running' })
     ctx.emit('agent/status', { agent, status: 'idle' })

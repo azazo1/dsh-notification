@@ -5,7 +5,6 @@
  */
 import { createElement } from 'react'
 import {
-  decodeNotificationSettings,
   PLUGIN_ID,
   SETTINGS_NAMESPACE,
   type NotificationSettings,
@@ -31,12 +30,7 @@ interface SlotsService {
 
 interface ClientContext {
   logger: { info: (...args: unknown[]) => void; debug: (...args: unknown[]) => void }
-  settingsScope: {
-    bind: (spec: {
-      namespace: string
-      decode?: (section: unknown) => NotificationSettings | undefined
-    }) => SettingsScope<NotificationSettings>
-  }
+  configForms: { get<T>(namespace: string): SettingsScope<T> }
   locale: LocaleService
   slots: SlotsService
   sessions?: { list?: SessionList }
@@ -44,7 +38,7 @@ interface ClientContext {
   effect: (callback: () => (() => void) | void, name?: string) => void
 }
 
-export const inject = ['slots', 'locale', 'settingsScope', 'sessions']
+export const inject = ['slots', 'locale', 'configForms', 'sessions']
 
 /**
  * 注入样式, 订阅浏览器通知, 并挂上独立设置页.
@@ -54,10 +48,7 @@ export function apply(ctx: ClientContext): void {
   ctx.logger.info('dsh-notification: client applying')
   injectStyles()
 
-  const scope = ctx.settingsScope.bind({
-    namespace: SETTINGS_NAMESPACE,
-    decode: decodeNotificationSettings,
-  })
+  const scope = ctx.configForms.get<NotificationSettings>(SETTINGS_NAMESPACE)
 
   ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'dsh-notification: dictionaries')
   ctx.effect(() => ensurePermission(), 'dsh-notification: permission')
