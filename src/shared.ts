@@ -4,8 +4,8 @@ export const PLUGIN_ID = 'dsh-notification'
 /** Host Cordis 插件名. */
 export const PLUGIN_NAME = PLUGIN_ID
 
-/** 持久化 settings 命名空间, 与插件名一致. */
-export const SETTINGS_NAMESPACE = PLUGIN_ID
+/** profile 条目 id: configForms 表单按它寻址, 与包名一致. */
+export const ENTRY_ID = PLUGIN_ID
 
 /** Loader 行 id, 已发布, 不要改. */
 export const LOADER_ID = 'notify'

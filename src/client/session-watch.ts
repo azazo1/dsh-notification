@@ -1,5 +1,5 @@
+import type { ConfigForm } from '@deepseek-ai/dsh-client-ui-settings/client'
 import { DEFAULT_SETTINGS, formatDuration, PLUGIN_ID, type NotificationSettings } from '../shared.ts'
-import type { SettingsScope } from './scope.ts'
 
 interface SessionRow {
   origin?: string
@@ -50,7 +50,7 @@ export function ensurePermission(): () => void {
   }
 }
 
-function liveSettings(scope: SettingsScope<NotificationSettings>): NotificationSettings {
+function liveSettings(scope: ConfigForm<NotificationSettings>): NotificationSettings {
   return scope.getSnapshot().value ?? DEFAULT_SETTINGS
 }
 
@@ -85,7 +85,7 @@ function show(config: NotificationSettings, body: string): void {
  */
 export function watchSessions(
   list: SessionList,
-  scope: SettingsScope<NotificationSettings>,
+  scope: ConfigForm<NotificationSettings>,
 ): () => void {
   const prev = new Map<string, TrackedRow>()
 

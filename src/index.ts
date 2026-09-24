@@ -11,7 +11,6 @@ import {
   DEFAULT_MIN_TURN_MS,
   DEFAULT_TITLE,
   PLUGIN_NAME,
-  SETTINGS_NAMESPACE,
   type NotificationSettings,
 } from './shared.ts'
 
