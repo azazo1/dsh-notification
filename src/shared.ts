@@ -4,11 +4,11 @@ export const PLUGIN_ID = 'dsh-notification'
 /** Host Cordis 插件名. */
 export const PLUGIN_NAME = PLUGIN_ID
 
-/** profile 条目 id: configForms 表单按它寻址, 与包名一致. */
-export const ENTRY_ID = PLUGIN_ID
-
 /** Loader 行 id, 已发布, 不要改. */
 export const LOADER_ID = 'notify'
+
+/** profile 条目 id: configForms 表单按它寻址, 等于 patch 里那一行的 id. */
+export const ENTRY_ID = LOADER_ID
 
 /** 默认通知标题. */
 export const DEFAULT_TITLE = 'DeepSeek Harness'
