@@ -43,7 +43,8 @@ export function apply(ctx: ClientContext): void {
     'plugins.bundle.config',
     () => ctx.slots.register({
       name: 'plugins.bundle.config',
-      key: ENTRY_ID,
+      // 槽位键是包名 (插件页按包名派发), 与 configForms 寻址用的条目 id 是两件事.
+      key: PLUGIN_ID,
       locale: NS,
       inject: () => card.inject(),
     }, NotificationSettingsCard),
