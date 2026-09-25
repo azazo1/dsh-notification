@@ -58,6 +58,14 @@
   "packageManager": "pnpm@11.24.0",
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.4",
+    "@deepseek-ai/dsh-api-session-controller": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-locale": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-store": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-ui-plugin-manager": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-ui-primitives": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-ui-renderer": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-ui-settings": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-ui-slots": ">=0.1.7-rc.2 <0.2.0",
     "@deepseek-ai/schemastery": "~3.18.4",
     "react": "^18.0.0 || ^19.0.0"
   },
@@ -65,7 +73,28 @@
     "@deepseek-ai/cordis": {
       "optional": true
     },
-    "@deepseek-ai/dsh-settings": {
+    "@deepseek-ai/dsh-api-session-controller": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-locale": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-store": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-plugin-manager": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-primitives": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-renderer": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-settings": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-slots": {
       "optional": true
     },
     "@deepseek-ai/schemastery": {
@@ -77,14 +106,14 @@
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "^4.0.4",
-    "@deepseek-ai/dsh-api-session-controller": "0.1.7-rc.1",
-    "@deepseek-ai/dsh-client-locale": "0.1.7-rc.1",
-    "@deepseek-ai/dsh-client-store": "0.1.7-rc.1",
-    "@deepseek-ai/dsh-client-ui-plugin-manager": "0.1.7-rc.1",
-    "@deepseek-ai/dsh-client-ui-primitives": "0.1.7-rc.1",
-    "@deepseek-ai/dsh-client-ui-renderer": "0.1.7-rc.1",
-    "@deepseek-ai/dsh-client-ui-settings": "0.1.7-rc.1",
-    "@deepseek-ai/dsh-client-ui-slots": "0.1.7-rc.1",
+    "@deepseek-ai/dsh-api-session-controller": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-locale": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-store": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-ui-plugin-manager": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-ui-primitives": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-ui-renderer": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-ui-settings": ">=0.1.7-rc.2 <0.2.0",
+    "@deepseek-ai/dsh-client-ui-slots": ">=0.1.7-rc.2 <0.2.0",
     "@deepseek-ai/schemastery": "~3.18.4",
     "@types/node": "^22.19.0",
     "@types/react": "^19.0.0",
